@@ -21,54 +21,72 @@ public class TennisGame1 implements TennisGame {
             player2Score += 1;
     }
 
-    public String getScore() {
+    private String handleEven() {
         String result = "";
-        if (player1Score == player2Score) {
-            switch (player1Score) {
+        switch (player1Score) {
+            case 0:
+                result = "Love-All";
+                break;
+            case 1:
+                result = "Fifteen-All";
+                break;
+            case 2:
+                result = "Thirty-All";
+                break;
+            default:
+                result = "Deuce";
+                break;
+
+        }
+        return result;
+    }
+
+    private String handleAdvantageOrWin() {
+        String result = "";
+        int minusResult = player1Score - player2Score;
+        if (minusResult == 1) result = "Advantage " + player1Name;
+        else if (minusResult == -1) result = "Advantage " +  player2Name;
+        else if (minusResult >= 2) result = "Win for " + player1Name;
+        else result = "Win for " + player2Name;
+        return result;
+    }
+
+    private String handleNormal() {
+        String result = "";
+        int tempScore = 0;
+        for (int i = 1; i < 3; i++) {
+            if (i == 1) tempScore = player1Score;
+            else {
+                result += "-";
+                tempScore = player2Score;
+            }
+            switch (tempScore) {
                 case 0:
-                    result = "Love-All";
+                    result += "Love";
                     break;
                 case 1:
-                    result = "Fifteen-All";
+                    result += "Fifteen";
                     break;
                 case 2:
-                    result = "Thirty-All";
+                    result += "Thirty";
                     break;
-                default:
-                    result = "Deuce";
+                case 3:
+                    result += "Forty";
                     break;
-
-            }
-        } else if (player1Score >= 4 || player2Score >= 4) {
-            int minusResult = player1Score - player2Score;
-            if (minusResult == 1) result = "Advantage " + player1Name;
-            else if (minusResult == -1) result = "Advantage " +  player2Name;
-            else if (minusResult >= 2) result = "Win for " + player1Name;
-            else result = "Win for " + player2Name;
-        } else {
-            int tempScore = 0;
-            for (int i = 1; i < 3; i++) {
-                if (i == 1) tempScore = player1Score;
-                else {
-                    result += "-";
-                    tempScore = player2Score;
-                }
-                switch (tempScore) {
-                    case 0:
-                        result += "Love";
-                        break;
-                    case 1:
-                        result += "Fifteen";
-                        break;
-                    case 2:
-                        result += "Thirty";
-                        break;
-                    case 3:
-                        result += "Forty";
-                        break;
-                }
             }
         }
         return result;
+    }
+
+    public String getScore() {
+        if (player1Score == player2Score) {
+            return handleEven();
+        }
+
+        if (player1Score >= 4 || player2Score >= 4) {
+            return handleAdvantageOrWin();
+        }
+
+        return handleNormal();
     }
 }
